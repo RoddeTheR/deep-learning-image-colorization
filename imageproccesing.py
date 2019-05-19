@@ -16,7 +16,8 @@ def pre_proccess_image(rgb_image):
 
     lab_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2LAB)
 
-    l = lab_image[:, :, 0]
+    # The -128  on l a and b are to mean center the values
+    l = lab_image[:, :, 0] - 128
     lab_image = cv2.resize(lab_image, (h, w), cv2.INTER_CUBIC)
     a = lab_image[:, :, 1].astype(np.int32)
     b = lab_image[:, :, 2].astype(np.int32)
@@ -55,6 +56,8 @@ def post_proccess_image(l, data, fixed_lightness=None):
     data = np.exp(np.log(data+1e-8) / temperature)
     data = data / np.sum(data, axis=1)[:, np.newaxis]
 
+    # The +128  on l a and b are counteract the -128 in the preprocessing step
+    l = l + 128
     quantized_ab = np.load("resource/pts_in_hull.npy")
     a = np.matmul(data, quantized_ab[:, 0]).reshape((h, w)) + 128
     b = np.matmul(data, quantized_ab[:, 1]).reshape((h, w)) + 128
