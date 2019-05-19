@@ -10,7 +10,7 @@ import h5py
 # Creates and trains the model #
 ################################
 log_dir = "logs"
-period_save_model = 200
+period_save_model = 10
 model_save_folder = "models"
 
 initializer = "he_normal"
@@ -144,7 +144,7 @@ tensorboard = tf.keras.callbacks.TensorBoard(
 model_checkpoint = tf.keras.callbacks.ModelCheckpoint(
     model_save_folder+"/"+"model{epoch:08d}.h5", period=period_save_model)
 lr_decay = tf.keras.callbacks.ReduceLROnPlateau(
-    monitor="val_loss", factor=0.2, patience=50, verbose=1)
+    monitor="val_loss", factor=0.2, patience=10, verbose=1)
 
 tg = DataGenerator("training")
 vg = DataGenerator("validation")
